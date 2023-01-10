@@ -14,6 +14,5 @@ create table if not EXISTS comments(
   article_id integer unsigned not NULL,
   message text not NULL,
   created_at DATETIME,
-  foreign key (article_id) refernce articles(article_id)  
+  foreign key (article_id) references articles(article_id)
 )
-
