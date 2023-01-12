@@ -23,24 +23,23 @@ func main() {
 	articleID := 1
 	const sqlStr = `select * from articles where article_id = ?;`
 
-	rows, err := db.Query(sqlStr, articleID)
+	row := db.QueryRow(sqlStr, articleID)
+	if err := row.Err(); err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	var article models.Article
+	var createdTime sql.NullTime
+	err = row.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
+
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer rows.Close()
 
-	var article models.Article
-	var createdTime sql.NullTime
-	for rows.Next() {
-		err := rows.Scan(&article.ID, &article.Title, &article.Contents, &article.UserName, &article.NiceNum, &createdTime)
-
-		if createdTime.Valid {
-			article.CreatedAt = createdTime.Time
-		}
-		if err != nil {
-			fmt.Println(err)
-		}
+	if createdTime.Valid {
+		article.CreatedAt = createdTime.Time
 	}
 	fmt.Printf("%+v\n", article)
 }
