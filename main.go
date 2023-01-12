@@ -20,9 +20,10 @@ func main() {
 	}
 	defer db.Close()
 
-	const sqlStr = `select * from articles;`
+	const sqlStr = `select * from articles where article_id = ?;`
 
-	rows, err := db.Query(sqlStr)
+	articleID := 1
+	rows, err := db.Query(sqlStr, articleID)
 	if err != nil {
 		fmt.Println(err)
 		return
